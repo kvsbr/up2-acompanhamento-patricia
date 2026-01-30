@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡DETENTE! - Última Oportunidad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .animate-blink { animation: blink 1s infinite; }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        /* Estilo para o modal de saída */
+        #exit-popup {
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="bg-[#D92525] min-h-screen flex flex-col items-center pt-8">
+
+    <!-- CONTEÚDO PRINCIPAL (CENTRALIZADO) -->
+    <main class="w-full max-w-2xl mx-auto px-4 flex flex-col items-center mb-0 pb-0">
+        
+        <!-- 1️⃣ BLOCO 1: ATRAÇÃO -->
+        <div class="text-center mb-6 w-full">
+            <h1 class="text-4xl md:text-6xl font-black text-white mb-3 leading-none uppercase tracking-tight drop-shadow-md">
+                ¡DETENTE!
+            </h1>
+            <h2 class="text-xl md:text-2xl font-bold text-white/90 leading-snug mb-3">
+                Estás a punto de cometer el error que hace que el <span class="bg-yellow-400 text-black px-1">73% fracase.</span>
+            </h2>
+            <p class="text-white font-medium text-lg mb-4">
+                Esta es tu última oportunidad de no hacerlo sola.
+            </p>
+            
+            <!-- TIMER 2 MINUTOS -->
+            <div class="inline-flex items-center bg-black/30 border border-white/20 rounded px-4 py-2 text-yellow-300 font-mono font-bold text-2xl">
+                <i class="fas fa-clock mr-2 animate-pulse"></i> <span id="countdown">02:00</span>
+            </div>
+        </div>
+
+        <!-- 2️⃣ BLOCO 2: VÍDEO CURTO (NOVO CÓDIGO INSERIDO) -->
+        <div id="vsl-container" style="position: relative; width: 100%; max-width: 444.8px; margin: 0 auto 2rem auto; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border-radius: 12px; overflow: hidden;">
+            
+            <div style="padding-bottom: 125%; position: relative; height: 0;">
+                <iframe 
+                    id="vsl-iframe"
+                    src="https://kvsbr.github.io/up2-acompanhamento-patricia/player.html" 
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                    allow="autoplay; fullscreen; encrypted-media; picture-in-picture" 
+                    allowfullscreen 
+                    title="Player VSL">
+                </iframe>
+            </div>
+
+        </div>
+
+        <script>
+            (function() {
+                var iframe = document.getElementById('vsl-iframe');
+                var search = window.location.search;
+                
+                // Repassa os dados do Facebook/Google Ads para dentro do vídeo
+                if (search) {
+                    var src = iframe.getAttribute('src');
+                    var separator = src.indexOf('?') > -1 ? '&' : '?';
+                    iframe.setAttribute('src', src + separator + search.substring(1));
+                }
+            })();
+        </script>
+
+        <!-- CONTAINER BRANCO DO CARTÃO (Blocos 3 e 4) -->
+        <!-- Removemos o widget daqui para ele não ficar preso na largura do cartão -->
+        <div class="w-full bg-white rounded-t-2xl shadow-2xl border border-gray-200 border-b-0 overflow-hidden flex flex-col">
+            
+            <!-- 3️⃣ BLOCO 3: CHECKLIST -->
+            <div class="p-6 md:p-8 border-b border-gray-100">
+                <h3 class="text-center text-2xl font-black text-gray-800 mb-2 uppercase">
+                    Esto no es contenido.<br>
+                    <span class="text-[#27ae60]">Es acompañamiento.</span>
+                </h3>
+                
+                <hr class="w-16 mx-auto border-gray-200 mb-6 mt-4">
+
+                <ul class="space-y-3 text-left max-w-md mx-auto">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i>
+                        <span class="text-gray-700 font-bold text-lg">Soporte Personal Directo y Prioritario</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i>
+                        <span class="text-gray-700 font-medium text-lg">Ajustes personalizados ilimitados</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i>
+                        <span class="text-gray-700 font-medium text-lg">Respuestas rápidas cuando el peso se estanca</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i>
+                        <span class="text-gray-700 font-medium text-lg">Corrección de errores antes de que se conviertan en fracaso</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-lg"></i>
+                        <span class="text-gray-700 font-bold text-lg">Garantía blindada de resultados</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 4️⃣ BLOCO 4: PREÇO (ÁREA CINZA) -->
+            <div class="bg-gray-50 pt-8 pb-8 px-6 md:px-8">
+                <div class="flex flex-col md:flex-row gap-0 md:gap-4 mb-6">
+                    <!-- Coluna: Tentar Sozinha -->
+                    <div class="flex-1 p-4 border-l-4 border-gray-300 bg-gray-100/50 mb-4 md:mb-0">
+                        <p class="font-bold text-gray-500 mb-3 uppercase text-sm tracking-wider">Tentar Sozinha:</p>
+                        <ul class="text-sm space-y-2 text-gray-500">
+                            <li>❌ Frustración</li>
+                            <li>❌ Errores invisibles</li>
+                            <li>❌ Estancamiento</li>
+                            <li>❌ Abandono</li>
+                        </ul>
+                    </div>
+
+                    <!-- Coluna: Acompanhamento -->
+                    <div class="flex-1 p-4 border-l-4 border-green-500 bg-white shadow-sm">
+                        <p class="font-bold text-green-700 mb-3 uppercase text-sm tracking-wider">Acompañamiento:</p>
+                        <ul class="text-sm space-y-2 text-gray-800 font-medium">
+                            <li>✅ Corrección inmediata</li>
+                            <li>✅ Seguridad</li>
+                            <li>✅ Resultado previsible</li>
+                            <li>✅ Confianza</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- PREÇO -->
+                <div class="text-center">
+                    <p class="text-gray-600 font-medium mb-1">Precio de la diferencia:</p>
+                    <div class="flex items-center justify-center gap-2">
+                        <span class="text-5xl font-black text-[#27ae60] tracking-tighter">$12</span>
+                        <span class="text-gray-400 text-lg font-normal">USD</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- RODAPÉ: WIDGET HOTMART (LARGURA TOTAL 100% DA TELA) -->
+    <!-- Fora do <main> para ocupar todo o vermelho -->
+    <div class="w-full bg-white m-0 p-0 border-t border-gray-200">
+        <div id="hotmart-sales-funnel" class="w-full m-0 p-0 block"></div>
+    </div>
+
+    <!-- POPUP EXIT INTENT -->
+    <div id="exit-popup" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+        <div class="bg-white w-full max-w-lg rounded-lg shadow-2xl relative border-[6px] border-[#C0392B] animate-fade-in-up">
+            
+            <button onclick="closePopup()" class="absolute top-2 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl leading-none">&times;</button>
+
+            <div class="p-6 text-center">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-[#C0392B] mb-3 leading-tight uppercase">
+                    ¡NO PIERDAS ESTA OPORTUNIDAD!
+                </h2>
+
+                <p class="text-gray-600 text-sm md:text-base mb-6 px-2">
+                    Añade el acompañamiento VIP por solo $12 antes de salir.
+                </p>
+
+                <!-- Container do Widget no Popup -->
+                <div class="w-full bg-gray-50 border border-gray-200 rounded mb-4 overflow-hidden">
+                    <div id="hotmart-sales-funnel-popup" class="w-full"></div>
+                </div>
+
+                <p class="text-gray-400 text-xs md:text-sm">
+                    Haz clic en el botón de arriba para confirmar.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://checkout.hotmart.com/lib/hotmart-checkout-elements.js"></script>
+    <script>
+        // Inicializa Widget Principal
+        checkoutElements.init('salesFunnel').mount('#hotmart-sales-funnel');
+
+        // Inicializa Widget do Popup
+        try {
+            checkoutElements.init('salesFunnel').mount('#hotmart-sales-funnel-popup');
+        } catch(e) { console.log('Erro ao montar widget do popup', e); }
+
+        // Timer 2 Minutos (120 segundos)
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            var interval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    display.textContent = "00:00";
+                    display.classList.add('text-red-600');
+                }
+            }, 1000);
+        }
+
+        // --- Lógica do Popup Exit Intent (RECORRENTE) ---
+        const popupElement = document.getElementById('exit-popup');
+
+        function showPopup() {
+            popupElement.classList.remove('hidden');
+        }
+
+        function closePopup() {
+            popupElement.classList.add('hidden');
+        }
+
+        // Gatilho: Mouse sai da tela
+        document.addEventListener('mouseleave', (e) => {
+            if (e.clientY < 0) showPopup();
+        });
+        document.body.addEventListener('mouseleave', () => {
+            showPopup();
+        });
+
+        window.onload = function () {
+            startTimer(120, document.querySelector('#countdown'));
+        };
+    </script>
+</body>
+</html>
