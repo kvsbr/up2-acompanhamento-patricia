@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player VSL - Tamanho Personalizado</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body { 
+            background-color: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* --- MUDANÇA DE TAMANHO AQUI --- */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 444.8px; /* Largura solicitada */
+            aspect-ratio: 444.8 / 556; /* Proporção exata solicitada */
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        video { width: 100%; height: 100%; display: block; object-fit: cover; }
+
+        /* MÁSCARA INICIAL (Vermelha) */
+        .initial-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 30; transition: opacity 0.3s ease;
+        }
+
+        .play-box {
+            background: rgba(220, 50, 50, 0.9);
+            backdrop-filter: blur(4px);
+            padding: 20px 30px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: pulse 2s infinite;
+            width: 80%;
+        }
+
+        .play-box h3 { font-size: 15px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; }
+        .play-box strong { display: block; font-size: 16px; font-weight: 800; margin-top: 10px; }
+        .mute-icon svg { width: 40px; height: 40px; fill: white; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+
+        /* --- VOLTOU O PAUSE ANTIGO (Triângulo) --- */
+        .pause-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 20; 
+            display: none; 
+            /* Degradê suave na parte de baixo */
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 30%);
+        }
+
+        .small-play-btn {
+            position: absolute; bottom: 25px; left: 25px;
+            width: 0; height: 0;
+            /* Cria o triângulo branco com CSS */
+            border-top: 12px solid transparent; 
+            border-bottom: 12px solid transparent; 
+            border-left: 20px solid white;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            pointer-events: none; /* O clique passa por ele e vai pro vídeo */
+        }
+
+        /* BARRA DE PROGRESSO (Grossa) */
+        .progress-container {
+            position: absolute; 
+            bottom: 0; left: 0; width: 100%; 
+            height: 12px;
+            background: rgba(255,255,255,0.2); 
+            z-index: 25;
+        }
+        
+        .progress-bar {
+            height: 100%; width: 0%; background: #e04f35; transition: width 0.1s linear;
+        }
+
+        video::-webkit-media-controls { display: none !important; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div class="video-wrapper" id="videoWrapper">
+        <video id="myVideo" playsinline loop muted poster="https://via.placeholder.com/445x556/333333/999999?text=Carregando..."></video>
+
+        <div class="initial-overlay" id="initialOverlay">
+            <div class="play-box">
+                <h3>Tu video ya comenzó</h3>
+                <div class="mute-icon">
+                    <svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-8-7.27-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                </div>
+                <strong>Haz clic para escuchar</strong>
+            </div>
+        </div>
+
+        <div class="pause-overlay" id="pauseOverlay">
+            <div class="small-play-btn"></div>
+        </div>
+
+        <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+    </div>
+
+    <script>
+        const video = document.getElementById('myVideo');
+        const wrapper = document.getElementById('videoWrapper');
+        const initialOverlay = document.getElementById('initialOverlay');
+        const pauseOverlay = document.getElementById('pauseOverlay');
+        const progressBar = document.getElementById('progressBar');
+
+        // SEU LINK
+        const videoSrc = 'https://cdn.jsdelivr.net/gh/kvsbr/videos/video-Up3-Patricia/Up2-vsl-patricia.m3u8';
+
+        let hasStarted = false; 
+
+        // CONFIGURAÇÃO TURBO
+        const turboTime = 35; // 60 segundos
+        const turboTarget = 90; // 50% da barra
+
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(videoSrc);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                video.play().catch(() => {});
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = videoSrc;
+            video.addEventListener('loadedmetadata', function() {
+                video.play().catch(() => {});
+            });
+        }
+
+        // Proteção Extra
+        wrapper.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
+
+        wrapper.addEventListener('click', () => {
+            if (!hasStarted) {
+                hasStarted = true;
+                video.muted = false;
+                video.currentTime = 0;
+                video.loop = false;
+                video.play();
+                initialOverlay.style.opacity = '0';
+                setTimeout(() => { initialOverlay.style.display = 'none'; }, 300);
+            } else {
+                if (video.paused) {
+                    video.play();
+                    pauseOverlay.style.display = 'none'; 
+                } else {
+                    video.pause();
+                    pauseOverlay.style.display = 'block'; 
+                }
+            }
+        });
+
+        // LÓGICA TURBO DA BARRA
+        video.addEventListener('timeupdate', () => {
+            if (hasStarted) {
+                let visualPercentage;
+                const currentTime = video.currentTime;
+                const duration = video.duration;
+
+                if (duration <= turboTime) {
+                    visualPercentage = (currentTime / duration) * 100;
+                } else {
+                    if (currentTime <= turboTime) {
+                        visualPercentage = (currentTime / turboTime) * turboTarget;
+                    } else {
+                        const remainingTime = duration - turboTime;
+                        const timePassedAfterTurbo = currentTime - turboTime;
+                        const remainingPercent = 100 - turboTarget;
+                        visualPercentage = turboTarget + ((timePassedAfterTurbo / remainingTime) * remainingPercent);
+                    }
+                }
+                if (visualPercentage > 100) visualPercentage = 100;
+                progressBar.style.width = visualPercentage + '%';
+            }
+        });
+
+        video.addEventListener('ended', () => {
+            pauseOverlay.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
